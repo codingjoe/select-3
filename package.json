@@ -1,0 +1,10 @@
+{
+  "name": "select-3",
+  "version": "0.1.0",
+  "description": "Modern & lightweight select box replacement",
+  "type": "module",
+  "exports": "./src/index.js",
+  "dependencies": {
+    "lit": "^3.2.1"
+  }
+}

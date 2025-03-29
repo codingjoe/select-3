@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Select3</title>
+  </head>
+  <body>
+    <form>
+      <label>
+        GitHub Users
+        <select-3 src="https://api.github.com/users?q=">
+          <option value="1">Option 1</option>
+          <option value="2" selected>Option 2</option>
+          <option value="3">Option 3</option>
+        </select-3>
+      </label>
+      <label>
+        Reference Select
+        <select required multiple>
+          <option value="">Please select</option>
+          <option value="1">Option 1</option>
+          <option value="2">Option 2</option>
+          <option value="3">Option 3</option>
+        </select>
+      </label>
+    </form>
+    <script type="module" src="src/index.mjs"></script>
+  </body>
+</html>
