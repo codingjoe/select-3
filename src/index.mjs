@@ -3,7 +3,7 @@ import { createRef, ref } from 'https://esm.sh/lit/directives/ref'
 import { map } from 'https://esm.sh/lit/directives/map'
 
 export class SearchInput extends HTMLInputElement {
-  constructor () {
+  constructor() {
     super()
     this.type = 'search'
   }
@@ -19,16 +19,16 @@ customElements.define('search-input', SearchInput, {
  * @param {number} wait - Time to wait before executing function in milliseconds. Default is 250ms.
  * @returns {Function} - Debounced function.
  */
-export function debounce (func, wait = 250) {
+export function debounce(func, wait = 250) {
   let timeout
   if (func[Symbol.toStringTag] === 'AsyncFunction') {
     return function (...args) {
       clearTimeout(timeout)
       return new Promise((resolve, reject) => {
         timeout = setTimeout(() => {
-          Promise.resolve(func.apply(this, [...args])).then(
-            resolve,
-          ).catch(reject)
+          Promise.resolve(func.apply(this, [...args]))
+            .then(resolve)
+            .catch(reject)
         }, wait)
       })
     }
@@ -53,7 +53,7 @@ export class Select3 extends LitElement {
     _options: { type: Array, attribute: false, reflect: true },
   }
 
-  constructor () {
+  constructor() {
     super()
 
     // Attach form controls internals
@@ -76,7 +76,7 @@ export class Select3 extends LitElement {
       border: thin solid ButtonBorder;
     }
 
-    input[type="search"] {
+    input[type='search'] {
       width: 100%;
       height: 100%;
       border: none;
@@ -94,30 +94,25 @@ export class Select3 extends LitElement {
     console.debug('render', this._options)
 
     return html`
-      <input type="search" ${ref(this.searchInputRef)}/>
+      <input type="search" ${ref(this.searchInputRef)} />
       <slot @slotchange=${this.handleSlotChange}>
-        ${
-          map(this._options, (option) =>
-            html`
-              <option value=${option.value}>${option.label}</option>
-            `)
-        }
+        ${map(
+          this._options,
+          (option) => html` <option value=${option.value}>${option.label}</option> `,
+        )}
       </slot>
     `
   }
 
-  firstUpdated () {
+  firstUpdated() {
     this.searchInput = this.searchInputRef.value
-    this.searchInput.addEventListener(
-      'input',
-      (event) => {
-        this.debounceSearch(event.target.value)
-      },
-    )
+    this.searchInput.addEventListener('input', (event) => {
+      this.debounceSearch(event.target.value)
+    })
   }
 
   // Form controls usually expose a "value" property
-  get value () {
+  get value() {
     for (const option of this._options) {
       if (option.selected) {
         return option.value
@@ -125,7 +120,7 @@ export class Select3 extends LitElement {
     }
   }
 
-  set value (v) {
+  set value(v) {
     for (const option of this._options) {
       option.selected = option.value === v
     }
@@ -134,35 +129,35 @@ export class Select3 extends LitElement {
   // The following properties and methods aren't strictly required,
   // but browser-level form controls provide them. Providing them helps
   // ensure consistency with browser-provided controls.
-  get form () {
+  get form() {
     return this._internals.form
   }
 
-  get type () {
+  get type() {
     return this.localName
   }
 
-  get validity () {
+  get validity() {
     return this._internals.validity
   }
 
-  get validationMessage () {
+  get validationMessage() {
     return this._internals.validationMessage
   }
 
-  get willValidate () {
+  get willValidate() {
     return this._internals.willValidate
   }
 
-  checkValidity () {
+  checkValidity() {
     return this._internals.checkValidity()
   }
 
-  reportValidity () {
+  reportValidity() {
     return this._internals.reportValidity()
   }
 
-  get options () {
+  get options() {
     return [...this._options]
   }
 
@@ -177,7 +172,7 @@ export class Select3 extends LitElement {
    * Add an option to the select element.
    * @param {HTMLOptionElement} option - Option element to add.
    */
-  add (option) {
+  add(option) {
     this._options.push(option)
     this.requestUpdate()
   }
@@ -186,30 +181,28 @@ export class Select3 extends LitElement {
    * Remove an option from the select element.
    * @param {HTMLOptionElement} option - Option element to remove.
    */
-  remove (option) {
-    this._options = this._options.filter(
-      (item) => item !== option,
-    )
+  remove(option) {
+    this._options = this._options.filter((item) => item !== option)
     this.requestUpdate()
   }
 
   handleSlotChange = (event) => {
     console.debug('slotchange')
-    this._options.push(...event.target.assignedElements({
-      flatten: true,
-      selector: 'option',
-    }))
+    this._options.push(
+      ...event.target.assignedElements({
+        flatten: true,
+        selector: 'option',
+      }),
+    )
   }
 
-  async search (term) {
+  async search(term) {
     console.debug('searching for:', term)
     const response = await fetch(`${this.src}${term}`)
     const data = await response.json()
     this._options.length = 0
     for (const item of data) {
-      this.add(
-        new Option(item.login, item.id),
-      )
+      this.add(new Option(item.login, item.id))
     }
   }
 }
